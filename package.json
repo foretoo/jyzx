@@ -3,7 +3,9 @@
   "module": "index.tsx",
   "type": "module",
   "scripts": {
-    "start": "bun build index.tsx --outdir dist"
+    "dev": "bun serve & bun compile --watch",
+    "serve": "bun --hot run serve.ts",
+    "compile": "bun build index.tsx --outdir public"
   },
   "devDependencies": {
     "@types/bun": "latest"
