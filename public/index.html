@@ -10,12 +10,7 @@
   <script>
     const ws = new WebSocket('ws://localhost')
     ws.onopen = () => console.log('hot reload enabled')
-    ws.onmessage = (e) => {
-      if (e.data === 'reload') {
-        ws.close()
-        location.reload()
-      }
-    }
+    ws.onmessage = () => location.reload()
   </script>
 </body>
 </html>

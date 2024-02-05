@@ -17,6 +17,5 @@
     /* Linting */
     "skipLibCheck": true,
     "strict": true
-  },
-  "include": [ "src" ]
+  }
 }

@@ -11,7 +11,7 @@ let htmlWS: ServerWebSocket<string>
 
 //////// WATCHER
 
-watch(dir, () => htmlWS?.send('reload'))
+watch(dir, () => htmlWS?.send(''))
 
 
 //////// SERVER

@@ -1,6 +1,3 @@
-/// <reference types="./jsx.d.ts" />
-
-
 let index = 0
 const effects: Function[] = []
 
@@ -12,13 +9,16 @@ export const h = <T extends JSX.ElementType = undefined>(
   const i = ++index
 
   if (type instanceof Function) {
+    if (type.name === 'Fragment') {
+      return Fragment(children) as JSX.Element<T>
+    }
     const node = type(attributes, children)
     effects[i]?.()
     return node as JSX.Element<T>
   }
 
   if (!type) {
-    return Fragment(attributes, children) as JSX.Element<T>
+    return Fragment(children) as JSX.Element<T>
   }
 
   const node = document.createElement(type)
@@ -28,7 +28,7 @@ export const h = <T extends JSX.ElementType = undefined>(
 }
 
 
-export const Fragment = (_: JSX.Attributes, children: JSX.Children[]) => {
+export const Fragment = (children: JSX.Children[]) => {
   const node = new DocumentFragment()
   traversChildren(node, children)
   return node
@@ -96,8 +96,6 @@ const traversChildren = (
       push(child)
     }
   }
-
-  return node
 }
 
 

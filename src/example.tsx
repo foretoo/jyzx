@@ -1,10 +1,10 @@
-import { h, Fragment, useRef, useEffect } from './jsx'
+import { h, Fragment, useRef, useEffect } from '.'
 
 
 const App = () => {
 
   let count = 0
-  const ref = useRef<HTMLDivElement>()
+  const ref = useRef<HTMLElement>()
 
   const print = (count: number) => ref.current.textContent = `${count}`
   const inc = () => print(++count)
@@ -12,7 +12,6 @@ const App = () => {
 
   useEffect(() => {
     console.log('App component mounted')
-    print(count)
   })
 
   return (
@@ -21,7 +20,7 @@ const App = () => {
       <main style={{ display: 'flex', gap: '20px' }}>
         <button onclick={inc}>+</button>
         <button onclick={dec}>-</button>
-        <pre ref={ref}></pre>
+        <pre ref={ref}>{count}</pre>
       </main>
     </>
   )
