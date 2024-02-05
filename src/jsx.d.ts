@@ -15,7 +15,7 @@ declare namespace JSX {
 
   type TagName = keyof HTMLElementTagNameMap
 
-  type Tag = TagName | string
+  type Tag = TagName | (string & {})
 
   type Attributes = Record<string, Function | Primitive | Record<string, any> | Nullish> | Nullish
 

@@ -1,11 +1,11 @@
 {
   "name": "jsx",
-  "module": "index.tsx",
+  "module": "src/jsx/index.ts",
   "type": "module",
   "scripts": {
     "dev": "bun serve & bun compile --watch",
-    "serve": "bun --hot run serve.ts",
-    "compile": "bun build index.tsx --outdir public"
+    "serve": "bun run serve.ts",
+    "compile": "bun build src/example.tsx --outdir public"
   },
   "devDependencies": {
     "@types/bun": "latest"

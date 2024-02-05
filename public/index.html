@@ -6,6 +6,16 @@
   <title>jsx example</title>
 </head>
 <body>
-  <script src="index.js"></script>
+  <script src="example.js"></script>
+  <script>
+    const ws = new WebSocket('ws://localhost')
+    ws.onopen = () => console.log('hot reload enabled')
+    ws.onmessage = (e) => {
+      if (e.data === 'reload') {
+        ws.close()
+        location.reload()
+      }
+    }
+  </script>
 </body>
 </html>

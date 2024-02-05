@@ -37,7 +37,9 @@ export const Fragment = (_: JSX.Attributes, children: JSX.Children[]) => {
 
 export const useRef = <T = undefined>(value?: T): { current: T } => ({ current: value! })
 
+
 export const useEffect = (fn: Function) => effects[index] = fn
+
 
 
 //////// HELPERS
@@ -78,7 +80,7 @@ const traversChildren = (
   children: JSX.Children[]
 ) => {
 
-  const push = (item: HTMLElement | DocumentFragment | Text) => node.appendChild(item)
+  const push = (item: Node) => node.appendChild(item)
 
   for (const child of children) {
     if (isNullish(child)) {

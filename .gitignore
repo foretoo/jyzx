@@ -1,6 +1,6 @@
 node_modules
 dist
-public/index.js
+public/*.js
 
 .idea
 .DS_Store

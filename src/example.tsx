@@ -6,7 +6,7 @@ const App = () => {
   let count = 0
   const ref = useRef<HTMLDivElement>()
 
-  const print = (count: number) => ref.current.textContent = count as any
+  const print = (count: number) => ref.current.textContent = `${count}`
   const inc = () => print(++count)
   const dec = () => print(--count)
 
@@ -17,7 +17,7 @@ const App = () => {
 
   return (
     <>
-      <Header title='Counter app' bold />
+      <Header title='Counter app h2' bold />
       <main style={{ display: 'flex', gap: '20px' }}>
         <button onclick={inc}>+</button>
         <button onclick={dec}>-</button>

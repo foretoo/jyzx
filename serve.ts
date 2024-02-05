@@ -1,9 +1,27 @@
-const dir = './public'
+import type { ServerWebSocket } from "bun"
+import { watch } from "fs"
+
+
+const dir = import.meta.dir + '/public'
+
 const html = Bun.file(dir + '/index.html')
+
+let htmlWS: ServerWebSocket<string>
+
+
+//////// WATCHER
+
+watch(dir, () => htmlWS?.send('reload'))
+
+
+//////// SERVER
 
 Bun.serve({
   port: 80,
-  async fetch(req) {
+
+  async fetch(req, server) {
+    server.upgrade(req)
+
     const path = new URL(req.url).pathname
 
     if (path === '/') {
@@ -17,6 +35,11 @@ Bun.serve({
 
     return new Response()
   },
+
+  websocket: {
+    open(ws: typeof htmlWS) { htmlWS = ws },
+    message() {},
+  }
 })
 
 console.log('\nhttp://localhost\n')
