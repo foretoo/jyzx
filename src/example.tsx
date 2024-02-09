@@ -4,12 +4,13 @@ import { h, Fragment, useRef, useEffect } from '.'
 const App = () => {
 
   let count = 0
-  const ref = useRef<HTMLElement>()
+  const ref = useRef<HTMLPreElement>()
 
   const print = (count: number) => ref.current.textContent = `${count}`
   const inc = () => print(++count)
   const dec = () => print(--count)
 
+  // fires only once on mount
   useEffect(() => {
     console.log('App component mounted')
   })

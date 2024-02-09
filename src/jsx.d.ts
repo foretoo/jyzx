@@ -4,30 +4,53 @@ type Primitive = string | number | boolean
 
 declare namespace JSX {
 
-  // necessary types
+  // necessary types (elements)
 
-  type IntrinsicElements = Record<Tag, Attributes>
+  type IntrinsicElements = {
+    [T in Tag]: T extends TagName
+                  ? Partial<ElementAttributeMap<T>>
+                  : Record<string, any>
+  }
 
-  type ElementType = Function | Tag | Nullish
+  type ElementType = Component<any, any> | Tag | Nullish
 
 
-  // supportive types
-
-  type TagName = keyof HTMLElementTagNameMap
+  // Tag
 
   type Tag = TagName | (string & {})
 
-  type Attributes = Record<string, Function | Primitive | Record<string, any> | Nullish> | Nullish
+  type TagName = keyof HTMLElementTagNameMap
 
+
+  // Attributes
+
+  type ElementAttributeMap<T extends TagName> = InnerAttributes<T> & EventHandlers<T> & {
+    [key: (string & {})]: any
+  }
+
+  type EventHandlers<T extends TagName> = {
+    [A in Extract<keyof HTMLElementTagNameMap[T], `on${string}`>]: HTMLElementTagNameMap[T][A]
+  }
+
+  type InnerAttributes<T extends TagName> = { ref: Ref<T>, style: Style }
+
+  type Ref<T extends TagName> = { current: HTMLElementTagNameMap[T] } | ((node: HTMLElementTagNameMap[T]) => void)
+
+  type Style = Record<string, string> | Nullish | false
+
+
+  // Component
 
   type Children = Nullish | Primitive | HTMLElement | DocumentFragment | Children[]
 
-  type Component<A extends Attributes = undefined> = (attributes: A, ...children: Children[]) => Element
+  type Attributes = Record<string, Function | Record<string, any> | Primitive | Nullish> | Nullish
+
+  type Component<A extends Attributes = {}, T extends Tag | Nullish = string> = (attributes: A, ...children: Children[]) => Element<T>
 
   type Element<T extends ElementType = string> =
-    T extends Function ? ReturnType<T> :
-    T extends TagName  ? HTMLElementTagNameMap[T] :
-    T extends string   ? HTMLElement :
-    DocumentFragment
+    T extends Component<any, any> ? ReturnType<T> :
+    T extends Nullish | ''        ? DocumentFragment :
+    T extends TagName             ? HTMLElementTagNameMap[T] :
+    HTMLUnknownElement    
 
 }
