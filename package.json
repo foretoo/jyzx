@@ -1,6 +1,6 @@
 {
   "name": "jsx",
-  "module": "src/jsx/index.ts",
+  "module": "src/index.ts",
   "type": "module",
   "scripts": {
     "dev": "bun serve & bun compile --watch",
