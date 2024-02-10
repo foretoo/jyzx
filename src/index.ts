@@ -1,5 +1,6 @@
+type Effect = () => void
 let index = 0
-const effects: Function[] = []
+const effects: Effect[] = []
 
 export const h = <T extends JSX.ElementType = undefined>(
   type?: T,
@@ -38,7 +39,7 @@ export const Fragment = (children: JSX.Children[]) => {
 export const useRef = <T = undefined>(value?: T): { current: T } => ({ current: value! })
 
 
-export const useEffect = (fn: Function) => effects[index] = fn
+export const useEffect = (fn: Effect) => effects[index] = fn
 
 
 

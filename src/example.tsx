@@ -8,14 +8,14 @@ const label = compute(() => count() == 0 ? 'null' : count() > 0 ? 'cool' : 'oops
 
 const App = () => {
 
-  const ref = useRef<HTMLPreElement>()
+  const pre = useRef<HTMLPreElement>()
 
-  const inc = () => count(v => ++v)
-  const dec = () => count(v => --v)
+  const inc = (v: number) => ++v
+  const dec = (v: number) => --v
 
   // fires only once on mount
   useEffect(() => {
-    effect(() => ref.current.textContent = `${count()}`)
+    effect(() => pre.current.textContent = `${count()}`)
     console.log('App component mounted')
   })
 
@@ -23,9 +23,9 @@ const App = () => {
     <>
       <Header title='Counter app h2' bold />
       <main style={{ display: 'flex', gap: '20px' }}>
-        <button onclick={inc}>+</button>
-        <button onclick={dec}>-</button>
-        <pre ref={ref}></pre>
+        <button onclick={() => count.set(inc)}>+</button>
+        <button onclick={() => count.set(dec)}>-</button>
+        <pre ref={pre}></pre>
       </main>
     </>
   )

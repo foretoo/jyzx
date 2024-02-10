@@ -1,7 +1,7 @@
 type Signal<T> = {
   (): T
-  (v: T): T
-  (fn: (value: T) => T): T
+  set(newValue: T): void
+  set(setter: (prevValue: T) => T): void
   watch(fn: (value: T) => void): void
 }
 
@@ -10,25 +10,27 @@ export const signal = <T>(value?: T) => {
 
   const listeners = new Set<Effect<T>>()
 
-  const signal = function(newValue) {
-    if (arguments.length) {
-      const updated = newValue instanceof Function ? newValue(value!) : newValue
-      if (value === updated) return
-      else {
-        value = updated
-        for (const fn of listeners) fn(value)
-      }
-    } else if (currEffect) {
+  const signal = function() {
+    if (currEffect) {
       listeners.add(currEffect as Effect<T>)
     }
     return value
-  } as Signal<T>
+  }
+
+  signal.set = (newValue: T | ((prevValue: T) => T)) => {
+    const updated = newValue instanceof Function ? newValue(value!) : newValue
+    if (value === updated) return
+    else {
+      value = updated
+      for (const fn of listeners) fn(value)
+    }
+  }
 
   signal.watch = (fn: (value: T) => void) => {
     listeners.add(fn as Effect<T>)
   }
 
-  return signal
+  return signal as Signal<T>
 }
 
 
@@ -49,6 +51,6 @@ export const effect = (fn: Effect) => {
 
 export const compute = <T>(fn: () => T) => {
   const computed = signal<T>()
-  effect(() => computed(fn()))
+  effect(() => computed.set(fn()))
   return computed
 }
