@@ -6,12 +6,13 @@ const dir = import.meta.dir + '/public'
 
 const html = Bun.file(dir + '/index.html')
 
-let htmlWS: ServerWebSocket<string>
+let htmlReloader = { send() {}} as any as ServerWebSocket
 
 
 //////// WATCHER
 
-watch(dir, () => htmlWS?.send(''))
+const msg = ''
+watch(dir, () => htmlReloader.send(msg))
 
 
 //////// SERVER
@@ -37,7 +38,7 @@ Bun.serve({
   },
 
   websocket: {
-    open(ws: typeof htmlWS) { htmlWS = ws },
+    open(ws: ServerWebSocket) { htmlReloader = ws },
     message() {},
   }
 })
