@@ -1,6 +1,11 @@
+import { effect, signal } from "./signals"
+import { isFunction, isNullish, isPrimitive } from "./utils"
+
+
 type Effect = () => void
 let index = 0
 const effects: Effect[] = []
+
 
 export const h = <T extends JSX.ElementType = undefined>(
   type?: T,
@@ -9,7 +14,7 @@ export const h = <T extends JSX.ElementType = undefined>(
 ) => {
   const i = ++index
 
-  if (type instanceof Function) {
+  if (isFunction(type)) {
     if (type.name === 'Fragment') {
       return Fragment(children) as JSX.Element<T>
     }
@@ -23,15 +28,15 @@ export const h = <T extends JSX.ElementType = undefined>(
   }
 
   const node = document.createElement(type)
-  traversAttributes(node, attributes)
-  traversChildren(node, children)
+  traverseAttributes(node, attributes)
+  traverseChildren(node, children)
   return node as JSX.Element<T>
 }
 
 
-export const Fragment = (children: JSX.Children[]) => {
+export const Fragment = (children?: JSX.Children[]) => {
   const node = new DocumentFragment()
-  traversChildren(node, children)
+  traverseChildren(node, children)
   return node
 }
 
@@ -43,9 +48,23 @@ export const useEffect = (fn: Effect) => effects[index] = fn
 
 
 
-//////// HELPERS
+//// SIGNALS
 
-const traversAttributes = (node: HTMLElement, attributes: JSX.Attributes) => {
+const SignalElementTag = 'signal-element'
+
+class SignalElement extends HTMLElement {}
+
+customElements.define(SignalElementTag, SignalElement)
+
+const isSignal = (value: unknown): value is Signal => (
+  value instanceof signal
+)
+
+
+
+//////// TRAVERSE
+
+const traverseAttributes = (node: HTMLElement, attributes: JSX.Attributes) => {
   if (!attributes) {
     return
   }
@@ -62,13 +81,16 @@ const traversAttributes = (node: HTMLElement, attributes: JSX.Attributes) => {
     else if (isPrimitive(value)) {
       set(key, `${value}`)
     }
+    else if (isSignal(value)) {
+      effect(() => set(key, value()))
+    }
     else if (key === 'style') {
       set(key, Object.entries(value).map(([k,v])=>v?`${k}:${v};`:'').join(''))
     }
     else if (key === 'ref') {
-      value instanceof Function ? value(node) : value.current = node
+      isFunction(value) ? value(node) : value.current = node
     }
-    else if (value instanceof Function) {
+    else if (isFunction(value)) {
       // @ts-ignore
       node[key] = value
     }
@@ -76,9 +98,9 @@ const traversAttributes = (node: HTMLElement, attributes: JSX.Attributes) => {
 }
 
 
-const traversChildren = (
+const traverseChildren = (
   node: HTMLElement | DocumentFragment,
-  children: JSX.Children[]
+  children: JSX.Children[] = []
 ) => {
 
   const push = (item: Node) => node.appendChild(item)
@@ -91,20 +113,15 @@ const traversChildren = (
       push(new Text(`${child}`))
     }
     else if (Array.isArray(child)) {
-      traversChildren(node, child)
+      traverseChildren(node, child)
+    }
+    else if (isSignal(child)) {
+      const wrapper = document.createElement(SignalElementTag)
+      effect(() => wrapper.replaceChildren(child()))
+      push(wrapper)
     }
     else {
       push(child)
     }
   }
 }
-
-
-const primitiveTypes = [ 'string', 'number', 'boolean' ]
-const isPrimitive = (value: unknown): value is Primitive => (
-  primitiveTypes.includes(typeof value)
-)
-
-const isNullish = (value: unknown): value is Nullish => (
-  value === null || value === undefined
-)

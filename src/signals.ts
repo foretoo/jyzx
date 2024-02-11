@@ -1,24 +1,24 @@
-type Signal<T> = {
-  (): T
-  set(newValue: T): void
-  set(setter: (prevValue: T) => T): void
-  watch(fn: (value: T) => void): void
-}
+import { isFunction } from "./utils"
+
+const signalIdentifier: unique symbol = Symbol()
+const define = Object.defineProperty
 
 
 export const signal = <T>(value?: T) => {
 
   const listeners = new Set<Effect<T>>()
 
-  const signal = function() {
+  const signal = () => {
     if (currEffect) {
       listeners.add(currEffect as Effect<T>)
     }
     return value
   }
 
+  define(signal, signalIdentifier, {})
+
   signal.set = (newValue: T | ((prevValue: T) => T)) => {
-    const updated = newValue instanceof Function ? newValue(value!) : newValue
+    const updated = isFunction(newValue) ? newValue(value!) : newValue
     if (value === updated) return
     else {
       value = updated
@@ -26,12 +26,10 @@ export const signal = <T>(value?: T) => {
     }
   }
 
-  signal.watch = (fn: (value: T) => void) => {
-    listeners.add(fn as Effect<T>)
-  }
-
   return signal as Signal<T>
 }
+
+define(signal, Symbol.hasInstance, { value(instance: any) { return signalIdentifier in instance }})
 
 
 // EFFECT

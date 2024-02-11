@@ -1,3 +1,9 @@
+type Signal<T = any> = {
+  (): T
+  set(newValue: T): void
+  set(setter: (prevValue: T) => T): void
+}
+
 type Nullish = null | undefined
 type Primitive = string | number | boolean
 
@@ -41,9 +47,9 @@ declare namespace JSX {
 
   // Component
 
-  type Children = Nullish | Primitive | HTMLElement | DocumentFragment | Children[]
+  type Children = Nullish | Primitive | Signal | HTMLElement | DocumentFragment | Children[]
 
-  type Attributes = Record<string, Function | Record<string, any> | Primitive | Nullish> | Nullish
+  type Attributes = Record<string, Function | Signal | Record<string, any> | Primitive | Nullish> | Nullish
 
   type Component<A extends Attributes = {}, T extends Tag | Nullish = string> = (attributes: A, ...children: Children[]) => Element<T>
 

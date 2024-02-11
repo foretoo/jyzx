@@ -1,45 +1,46 @@
 import { h, Fragment, useRef, useEffect } from '.'
-import { compute, effect, signal } from './signal'
+import { compute, signal } from './signals'
 
 
 const count = signal(0)
-const label = compute(() => count() == 0 ? 'null' : count() > 0 ? 'cool' : 'oops')
+const inc = () => count.set(v => ++v)
+const dec = () => count.set(v => --v)
 
 
 const App = () => {
 
   const pre = useRef<HTMLPreElement>()
 
-  const inc = (v: number) => ++v
-  const dec = (v: number) => --v
-
   // fires only once on mount
   useEffect(() => {
-    effect(() => pre.current.textContent = `${count()}`)
-    console.log('App component mounted')
+    console.log('App component mounted', pre.current)
   })
 
   return (
     <>
       <Header title='Counter app h2' bold />
       <main style={{ display: 'flex', gap: '20px' }}>
-        <button onclick={() => count.set(inc)}>+</button>
-        <button onclick={() => count.set(dec)}>-</button>
-        <pre ref={pre}></pre>
+        <button onclick={inc}>+</button>
+        <button onclick={dec}>-</button>
+        <pre ref={pre}>{count}</pre>
       </main>
     </>
   )
 }
 
 
-type HeaderProps = { title: string, bold?: boolean }
+const Header = ({ title, bold }: { title: string, bold?: boolean }) => {
 
-const Header = ({ title, bold }: HeaderProps) => {
+  const label = compute(() => {
+    const v = count()
+    return title + ' ' + (v == 0 ? 'null' : v > 0 ? 'cool' : 'oops')
+  })
+
   const onMount = (h2: HTMLHeadingElement) => {
-    label.watch(v => h2.textContent = title + ' ' + v)
     console.log('h2 element mounted', h2)
   }
-  return <h2 ref={onMount} style={bold && { 'font-weight': 'bold' }}>{title + ' ' + label()}</h2>
+
+  return <h2 ref={onMount} style={bold && { 'font-weight': 'bold' }}>{label}</h2>
 }
 
 
