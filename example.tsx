@@ -17,14 +17,14 @@ const App = () => {
   })
 
   return (
-    <>
+    <main>
       <Header title='Counter app h2' bold />
-      <main style={{ display: 'flex', gap: '20px' }}>
+      <section style={{ display: 'flex', gap: '1rem' }}>
         <button onclick={inc}>+</button>
         <button onclick={dec}>-</button>
-        <pre ref={pre}>{count}</pre>
-      </main>
-    </>
+        <pre ref={pre} style={{ 'margin-left': 'auto' }}>{count}</pre>
+      </section>
+    </main>
   )
 }
 
@@ -40,7 +40,7 @@ const Header = ({ title, bold }: { title: string, bold?: boolean }) => {
     console.log('h2 element mounted', h2)
   }
 
-  return <h2 ref={onMount} style={bold && { 'font-weight': 'bold' }}>{label}</h2>
+  return <h2 ref={onMount} style={bold && { 'font-weight': 'bold', 'text-align': 'right' }}>{label}</h2>
 }
 
 
