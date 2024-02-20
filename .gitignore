@@ -1,7 +1,5 @@
 bun.lockb
 node_modules
-dist
-public/*.js
 
 .idea
 .DS_Store

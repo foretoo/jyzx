@@ -2,7 +2,7 @@ import type { ServerWebSocket } from "bun"
 import { watch } from "fs"
 
 
-const dir = import.meta.dir + '/public'
+const dir = import.meta.dir
 
 const html = Bun.file(dir + '/index.html')
 
