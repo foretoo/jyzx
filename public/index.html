@@ -8,11 +8,15 @@
   <title>jsx example</title>
 </head>
 <body>
-  <script src="example.js"></script>
   <script>
     const ws = new WebSocket('ws://localhost')
-    ws.onopen = () => console.log('hot reload enabled')
     ws.onmessage = () => location.reload()
+    ws.onopen = () => {
+      console.log('\x1b[32mhmr enabled')
+      const script = document.createElement('script')
+      script.src = "example.js"
+      document.body.append(script)
+    }
   </script>
 </body>
 </html>

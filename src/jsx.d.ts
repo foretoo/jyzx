@@ -6,54 +6,49 @@ type Signal<T = any> = {
 
 
 declare namespace JSX {
+  type Nullish = null | undefined
+  type Primitive = string | number | boolean
 
-  // necessary types (elements)
+
+  // necessary types (elements) for jsx transpiler
 
   type IntrinsicElements = {
-    [T in Tag]: T extends TagName
-                  ? Partial<ElementAttributeMap<T>>
-                  : Record<string, any>
+    [T in Tag]: T extends HTMLTag ? Partial<ElementAttributes<T>> : Record<string, any>
   }
 
   type ElementType = Component<any, any> | Tag | Nullish
 
 
-  // Tag
+  // Element
 
-  type Tag = TagName | (string & {})
+  type Tag = HTMLTag | (string & {})
 
-  type TagName = keyof HTMLElementTagNameMap
+  type HTMLTag = keyof HTMLElementTagNameMap
 
-
-  // Attributes
-
-  type ElementAttributeMap<T extends TagName> = InnerAttributes<T> & EventHandlers<T> & {
-    [key: (string & {})]: any
-  }
-
-  type EventHandlers<T extends TagName> = {
+  type ElementAttributes<T extends HTMLTag> = {
+    [key: string]: any
+    ref: { current: HTMLElementTagNameMap[T] } | ((node: HTMLElementTagNameMap[T]) => void)
+    style: Record<string, string> | Nullish | false
+  } & {
     [A in Extract<keyof HTMLElementTagNameMap[T], `on${string}`>]: HTMLElementTagNameMap[T][A]
   }
-
-  type InnerAttributes<T extends TagName> = { ref: Ref<T>, style: Style }
-
-  type Ref<T extends TagName> = { current: HTMLElementTagNameMap[T] } | ((node: HTMLElementTagNameMap[T]) => void)
-
-  type Style = Record<string, string> | Nullish | false
 
 
   // Component
 
   type Children = Nullish | Primitive | Signal | HTMLElement | DocumentFragment | Children[]
 
-  type Attributes = Record<string, Function | Signal | Record<string, any> | Primitive | Nullish> | Nullish
+  type ComponentAttributes = Record<string, Function | Signal | Record<string, any> | Primitive | Nullish> | Nullish
 
-  type Component<A extends Attributes = {}, T extends Tag | Nullish = string> = (attributes: A, ...children: Children[]) => Element<T>
+  type Component<A extends ComponentAttributes = {}, T extends Tag | Nullish = string> = (attributes: A, ...children: Children[]) => Element<T>
+
+
+  // Output Element
 
   type Element<T extends ElementType = string> =
     T extends Component<any, any> ? ReturnType<T> :
     T extends Nullish | ''        ? DocumentFragment :
-    T extends TagName             ? HTMLElementTagNameMap[T] :
-    HTMLUnknownElement    
+    T extends HTMLTag             ? HTMLElementTagNameMap[T] :
+    HTMLElement    
 
 }

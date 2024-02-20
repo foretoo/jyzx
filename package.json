@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "bun serve & bun compile --watch",
     "serve": "bun run serve.ts",
-    "compile": "bun build src/example.tsx --outdir public"
+    "compile": "bun build example.tsx --outdir public"
   },
   "devDependencies": {
     "@types/bun": "latest",

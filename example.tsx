@@ -1,5 +1,5 @@
-import { h, Fragment, useRef, useEffect } from '.'
-import { compute, signal } from './signals'
+import { h, Fragment, useRef, useEffect } from './src'
+import { compute, signal } from './src/signals'
 
 
 const count = signal(0)

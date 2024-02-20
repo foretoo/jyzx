@@ -6,12 +6,12 @@ const dir = import.meta.dir + '/public'
 
 const html = Bun.file(dir + '/index.html')
 
-let htmlReloader = { send() {}} as any as ServerWebSocket
+let htmlReloader = { send() {}} as any as ServerWebSocket<unknown>
 
 
 //////// WATCHER
 
-const msg = ''
+const msg = 'reload'
 watch(dir, () => htmlReloader.send(msg))
 
 
@@ -19,6 +19,11 @@ watch(dir, () => htmlReloader.send(msg))
 
 Bun.serve({
   port: 80,
+
+  websocket: {
+    open(ws) { htmlReloader = ws },
+    message() {},
+  },
 
   async fetch(req, server) {
     server.upgrade(req)
@@ -36,11 +41,6 @@ Bun.serve({
 
     return new Response()
   },
-
-  websocket: {
-    open(ws: ServerWebSocket) { htmlReloader = ws },
-    message() {},
-  }
 })
 
 console.log('\nhttp://localhost\n')

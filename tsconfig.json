@@ -18,5 +18,5 @@
     "skipLibCheck": true,
     "strict": true
   },
-  "include": ["src","global.d.ts"]
+  "include": ["example.tsx"]
 }

@@ -1,3 +1,4 @@
+/// <reference types="./jsx.d.ts" />
 import { effect, signal } from "./signals"
 import { isFunction, isNullish, isPrimitive } from "./utils"
 
@@ -9,7 +10,7 @@ const effects: Effect[] = []
 
 export const h = <T extends JSX.ElementType = undefined>(
   type?: T,
-  attributes?: JSX.Attributes,
+  attributes?: JSX.ComponentAttributes,
   ...children: JSX.Children[]
 ) => {
   const i = ++index
@@ -64,7 +65,7 @@ const isSignal = (value: unknown): value is Signal => (
 
 //////// TRAVERSE
 
-const traverseAttributes = (node: HTMLElement, attributes: JSX.Attributes) => {
+const traverseAttributes = (node: HTMLElement, attributes: JSX.ComponentAttributes) => {
   if (!attributes) {
     return
   }
