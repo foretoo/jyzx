@@ -9,14 +9,18 @@
 </head>
 <body>
   <script>
-    const ws = new WebSocket('ws://localhost')
-    ws.onmessage = () => location.reload()
-    ws.onopen = () => {
-      console.log('\x1b[32mhmr enabled')
+    const injectScript = () => {
       const script = document.createElement('script')
       script.src = "./dist/example.js"
       document.body.append(script)
     }
+    const ws = new WebSocket('ws://localhost')
+    ws.onopen = () => {
+      console.log('\x1b[32mhmr enabled')
+      injectScript()
+    }
+    ws.onmessage = location.reload
+    ws.onerror = injectScript
   </script>
 </body>
 </html>
