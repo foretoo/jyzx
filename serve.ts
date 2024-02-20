@@ -4,7 +4,25 @@ import { watch } from "fs"
 
 const dir = import.meta.dir
 
-const html = Bun.file(dir + '/index.html')
+const htmlFile = Bun.file(dir + '/index.html')
+const htmlContent = await htmlFile.text()
+
+const reloadScriptContent = `<script>
+    const injectScript = () => {
+      const script = document.createElement('script')
+      script.src = "./dist/example.js"
+      document.body.append(script)
+    }
+    const ws = new WebSocket('ws://localhost')
+    ws.onopen = () => {
+      console.log('\\x1b[32mhmr enabled')
+      injectScript()
+    }
+    ws.onmessage = location.reload
+    ws.onerror = injectScript
+  </script>`
+
+Bun.write(htmlFile, htmlContent.replace(/<script.+><\/script>/, reloadScriptContent))
 
 let htmlReloader = { send() {}} as any as ServerWebSocket<unknown>
 
@@ -31,7 +49,7 @@ Bun.serve({
     const path = new URL(req.url).pathname
 
     if (path === '/') {
-      return new Response(html)
+      return new Response(htmlFile)
     }
 
     const file = Bun.file(dir + path)
@@ -49,6 +67,9 @@ console.log('\nhttp://localhost\n')
 
 //////// PROCESS
 
-const exit = () => process.exit()
+const exit = () => {
+  Bun.write(htmlFile, htmlContent)
+  process.exit()
+}
 process.on('SIGINT', exit)
 process.on('uncaughtException', exit)

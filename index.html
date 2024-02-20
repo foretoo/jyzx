@@ -8,19 +8,6 @@
   <title>jsx example</title>
 </head>
 <body>
-  <script>
-    const injectScript = () => {
-      const script = document.createElement('script')
-      script.src = "./dist/example.js"
-      document.body.append(script)
-    }
-    const ws = new WebSocket('ws://localhost')
-    ws.onopen = () => {
-      console.log('\x1b[32mhmr enabled')
-      injectScript()
-    }
-    ws.onmessage = location.reload
-    ws.onerror = injectScript
-  </script>
+  <script src="./dist/example.js"></script>
 </body>
 </html>
