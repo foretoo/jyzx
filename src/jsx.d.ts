@@ -4,9 +4,6 @@ type Signal<T = any> = {
   set(setter: (prevValue: T) => T): void
 }
 
-type Nullish = null | undefined
-type Primitive = string | number | boolean
-
 
 declare namespace JSX {
 
