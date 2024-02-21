@@ -22,7 +22,7 @@ const App = () => {
       <section style={{ display: 'flex', gap: '1rem' }}>
         <button onclick={inc}>+</button>
         <button onclick={dec}>-</button>
-        <pre ref={pre} style={{ 'margin-left': 'auto' }}>{count}</pre>
+        <pre ref={pre} style={{ 'margin-left': 'auto', display: 'flex', 'align-items': 'center' }}>{count}</pre>
       </section>
     </main>
   )
@@ -38,9 +38,12 @@ const Header = ({ title, bold }: { title: string, bold?: boolean }) => {
 
   const onMount = (h2: HTMLHeadingElement) => {
     console.log('h2 element mounted', h2)
+    let i = 0
+    const dots = [ '.', '..', '...' ]
+    setInterval(() => h2.textContent = dots[i++ % 3] + label(), 1000)
   }
 
-  return <h2 ref={onMount} style={bold && { 'font-weight': 'bold', 'text-align': 'right' }}>{label}</h2>
+  return <h2 ref={onMount} style={bold && { 'font-weight': 'bold', 'text-align': 'right' }}>{label()}</h2>
 }
 
 

@@ -11,19 +11,22 @@ import { signal } from './src/signals'
 
 const count = signal(0)
 
-const App = () => {
+const App = (props: { title: string }) => {
 
   const ref = useRef<HTMLHeadingElement>()
 
   // fires only once on mount
   useEffect(() => {
-    ref.current.textContent = 'Counter app'
     console.log('App component mounted')
+
+    let i = 0
+    const dots = [ '.', '..', '...' ]
+    setInterval(() => ref.current.textContent = props.title + dots[i++ % 3], 1000)
   })
 
   return (
     <>
-      <h2 ref={ref}></h2>
+      <h2 ref={ref}>{props.title}</h2>
       <section style={{ display: 'flex', gap: '1rem' }}>
         <button onclick={() => count.set(v => ++v)}>+</button>
         <button onclick={() => count.set(v => --v)}>-</button>
@@ -33,5 +36,5 @@ const App = () => {
   )
 }
 
-document.body.appendChild(<App />)
+document.body.appendChild(<App title="Counter app" />)
 ```

@@ -18,7 +18,7 @@ body {
 }
 
 main {
-  width: 240px;
+  width: 280px;
   margin: auto;
   display: flex;
   flex-direction: column;

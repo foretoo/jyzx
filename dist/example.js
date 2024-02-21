@@ -142,7 +142,7 @@ var App = () => {
     onclick: dec
   }, "-"), h("pre", {
     ref: pre,
-    style: { "margin-left": "auto" }
+    style: { "margin-left": "auto", display: "flex", "align-items": "center" }
   }, count)));
 };
 var Header = ({ title, bold }) => {
@@ -152,10 +152,13 @@ var Header = ({ title, bold }) => {
   });
   const onMount = (h2) => {
     console.log("h2 element mounted", h2);
+    let i = 0;
+    const dots = [".", "..", "..."];
+    setInterval(() => h2.textContent = dots[i++ % 3] + label(), 1000);
   };
   return h("h2", {
     ref: onMount,
     style: bold && { "font-weight": "bold", "text-align": "right" }
-  }, label);
+  }, label());
 };
 document.body.appendChild(h(App, null));
