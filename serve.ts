@@ -17,6 +17,7 @@ const reloadScriptContent = `<script>
     ws.onopen = () => {
       console.log('\\x1b[32mhmr enabled')
       injectScript()
+      ws.onerror = () => {}
     }
     ws.onmessage = location.reload
     ws.onerror = injectScript
